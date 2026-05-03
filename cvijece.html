@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-Shop & Custom Studio</title>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="font-poppins bg-slate-50 min-h-screen flex flex-col antialiased text-slate-800 select-none">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+            <!-- Brand / Logo -->
+            <a href="#" onclick="showSection('public-store')" class="flex items-center gap-2 group">
+                <div class="w-10 h-10 bg-gradient-to-tr from-pink-500 to-rose-400 rounded-xl flex items-center justify-center text-white text-lg font-bold shadow-md group-hover:scale-105 transition-all">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-dancing font-bold bg-gradient-to-r from-pink-600 to-rose-500 bg-clip-text text-transparent leading-none">
+                        Sanela Studio
+                    </h1>
+                    <p class="text-[10px] text-slate-400 font-medium tracking-widest uppercase mt-0.5" id="header-sub">
+                        Handmade & Unique
+                    </p>
+                </div>
+            </a>
+
+            <!-- Right side elements -->
+            <div class="flex items-center gap-3">
+                <!-- Lang Toggle -->
+                <button onclick="toggleLang()" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-600 hover:text-slate-900 rounded-full text-xs font-semibold tracking-wide transition-all uppercase border border-slate-200/60 shadow-sm cursor-pointer">
+                    <i class="fa-solid fa-globe text-pink-500 text-sm"></i>
+                    <span id="btn-lang-text">EN</span>
+                </button>
+
+                <!-- Admin Button / Link -->
+                <button id="nav-admin-btn" onclick="openAdmin()" class="flex items-center gap-2 px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 hover:text-pink-600 rounded-full text-sm font-medium transition-all shadow-sm border border-slate-200/60 cursor-pointer">
+                    <i class="fa-solid fa-user-shield text-slate-500"></i>
+                    <span id="nav-admin-lbl" class="hidden sm:inline">Admin</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="flex-grow">
+        <!-- 1. PUBLIC VIEW -->
+        <section id="public-store" class="section-view animate-fadeIn">
+            <!-- Banner / Hero Section -->
+            <div class="relative overflow-hidden bg-gradient-to-br from-pink-50 via-rose-50 to-white py-12 md:py-16">
+                <div class="absolute -right-20 -top-20 w-80 h-80 bg-pink-100 rounded-full blur-3xl opacity-60"></div>
+                <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-rose-100 rounded-full blur-3xl opacity-60"></div>
+                <div class="max-w-7xl mx-auto px-4 relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                    <div class="text-left space-y-4 max-w-xl">
+                        <span id="hero-badge" class="inline-block px-3 py-1 bg-pink-100/60 backdrop-blur-md text-pink-700 font-semibold text-xs tracking-wider uppercase rounded-full shadow-sm border border-pink-200/30">
+                            Prekrasni Pokloni & Više
+                        </span>
+                        <h2 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+                            Unikatni detalji za vaše najdraže trenutke
+                        </h2>
+                        <p id="hero-desc" class="text-slate-600 text-sm md:text-base leading-relaxed">
+                            Pronađite predivne poklone u našoj prodavnici ili nam pošaljite vašu posebnu želju, a mi ćemo je pretvoriti u stvarnost.
+                        </p>
+                        <div class="flex flex-wrap items-center gap-3 pt-2">
+                            <a href="#proizvodi" class="px-5 py-2.5 bg-gradient-to-r from-pink-600 to-rose-500 text-white font-semibold rounded-xl text-sm shadow-md hover:opacity-95 hover:shadow-pink-300/40 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-shopping-bag"></i>
+                                <span id="hero-cta-shop">Istražite Proizvode</span>
+                            </a>
+                            <button onclick="openWishModal()" class="px-5 py-2.5 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:border-pink-300 hover:text-pink-600 transition-all flex items-center gap-2 shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-wand-magic-sparkles text-pink-500 animate-pulse"></i>
+                                <span id="hero-cta-wish">Pošaljite Želju</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex justify-center items-center relative">
+                        <div class="w-80 h-80 bg-gradient-to-tr from-pink-400/20 to-rose-200/20 rounded-3xl p-4 shadow-xl border border-white backdrop-blur-lg transform rotate-2 hover:rotate-0 transition-all duration-500">
+                            <div class="w-full h-full bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden relative shadow-inner">
+                                <i class="fa-solid fa-box-open text-6xl text-pink-300/60 animate-bounce"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div id="proizvodi" class="max-w-7xl mx-auto px-4 py-12 md:py-16">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h3 id="section-prod-title" class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
+                            Aktuelna Ponuda
+                        </h3>
+                        <p id="section-prod-desc" class="text-slate-500 text-xs md:text-sm mt-1">
+                            Pažljivo izrađeni predmeti dostupni za brzu narudžbu
+                        </p>
+                    </div>
+                    <!-- Stats Badge -->
+                    <div id="prod-counter" class="px-3 py-1 bg-slate-100 text-slate-500 text-xs font-semibold rounded-full border border-slate-200/60">
+                        Total items: <span id="items-count" class="text-slate-800 font-bold">0</span>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Dynamic Product Cards Go Here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="products-empty" class="hidden text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-white max-w-md mx-auto mt-4">
+                    <i class="fa-regular fa-folder-open text-4xl text-slate-300 mb-2"></i>
+                    <p id="empty-prod-txt" class="text-slate-500 font-medium text-sm">Nema dostupnih proizvoda. Provjerite ponovo kasnije.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. LOGIN VIEW -->
+        <section id="login-view" class="section-view hidden animate-fadeIn max-w-md mx-auto px-4 py-16">
+            <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-14 h-14 mx-auto bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center text-xl font-bold shadow-sm">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 id="login-title" class="text-2xl font-bold text-slate-800">Prijava za Admina</h3>
+                    <p id="login-desc" class="text-slate-500 text-sm">Pristupite Sanela upravljačkom panelu</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label id="login-usr-lbl" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5" for="username">Korisničko Ime</label>
+                        <input id="username" type="text" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all bg-slate-50/50" placeholder="npr. sanela">
+                    </div>
+                    <div>
+                        <label id="login-pwd-lbl" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5" for="password">Lozinka</label>
+                        <input id="password" type="password" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all bg-slate-50/50" placeholder="••••••••">
+                    </div>
+
+                    <div id="login-error" class="hidden text-red-500 text-xs font-semibold bg-red-50 p-3 rounded-xl border border-red-100 flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span id="login-error-txt">Pogrešno korisničko ime ili lozinka.</span>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-600 to-rose-500 text-white font-bold rounded-xl text-sm shadow-md hover:opacity-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        <span id="login-submit-lbl">Prijavi se</span>
+                    </button>
+                    <button type="button" onclick="showSection('public-store')" class="w-full py-2.5 bg-white border border-slate-200 text-slate-600 font-semibold rounded-xl text-sm hover:bg-slate-50 transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span id="login-back-lbl">Nazad u prodavnicu</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 3. ADMIN PANEL -->
+        <section id="admin-panel" class="section-view hidden animate-fadeIn max-w-7xl mx-auto px-4 py-8 md:py-12">
+            <!-- Admin Banner Header -->
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-3xl p-6 md:p-8 mb-8 shadow-lg relative overflow-hidden flex flex-wrap items-center justify-between gap-6 border border-slate-800/80">
+                <div class="absolute -right-20 -top-20 w-60 h-60 bg-pink-500/10 rounded-full blur-3xl"></div>
+                <div class="relative z-10 flex items-center gap-4">
+                    <div class="w-14 h-14 bg-pink-500 text-white rounded-2xl flex items-center justify-center text-xl font-bold shadow-lg shadow-pink-500/30">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h2 id="adm-head-title" class="text-xl md:text-2xl font-bold">Admin Upravljački Panel</h2>
+                        <p id="adm-head-desc" class="text-slate-400 text-xs md:text-sm font-medium">Dobrodošli nazad, Sanela. Upravljajte artiklima i narudžbama.</p>
+                    </div>
+                </div>
+                <!-- Admin Top Actions -->
+                <div class="flex items-center gap-2.5">
+                    <button onclick="showSection('public-store')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2 border border-slate-700 cursor-pointer">
+                        <i class="fa-solid fa-eye"></i>
+                        <span id="adm-btn-site" class="hidden sm:inline">Vidi Sajt</span>
+                    </button>
+                    <button onclick="handleLogout()" class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 hover:text-red-300 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span id="adm-btn-logout">Odjavi se</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Layout: Side Form, Top Tabs -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left Sidebar: Add New Product Form -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md">
+                        <h4 id="adm-add-title" class="text-base md:text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-plus text-pink-500"></i>
+                            <span>Novi Proizvod</span>
+                        </h4>
+                        
+                        <form id="product-form" onsubmit="handleSaveProduct(event)" class="space-y-4">
+                            <div>
+                                <label id="adm-add-name" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="p-title">Naziv Proizvoda</label>
+                                <input id="p-title" type="text" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="npr. Unikatni Ram sa Slikom">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label id="adm-add-price" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="p-price">Cijena (KM / €)</label>
+                                    <input id="p-price" type="text" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="npr. 25 KM">
+                                </div>
+                                <div>
+                                    <label id="adm-add-status" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="p-status">Status</label>
+                                    <select id="p-status" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40">
+                                        <option value="dostupno" id="adm-opt-avail">Dostupno</option>
+                                        <option value="nije dostupno" id="adm-opt-notavail">Nije dostupno</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label id="adm-add-desc" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="p-desc">Opis</label>
+                                <textarea id="p-desc" rows="2" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="Unesite kratak opis artikla..."></textarea>
+                            </div>
+
+                            <!-- Camera & Photo Setup -->
+                            <div class="border border-slate-100 bg-slate-50/50 p-4 rounded-2xl space-y-3">
+                                <label id="adm-add-pic" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Fotografija Artikla</label>
+                                
+                                <!-- Capture Methods Tabs -->
+                                <div class="flex bg-slate-200/60 p-1 rounded-xl text-xs gap-1 font-semibold text-slate-600">
+                                    <button type="button" onclick="setPicMethod('cam')" id="tab-cam-btn" class="flex-1 py-1.5 rounded-lg bg-white text-slate-800 shadow-sm text-center flex items-center justify-center gap-1.5 transition-all">
+                                        <i class="fa-solid fa-camera"></i> <span id="adm-cap-cam">Kamera</span>
+                                    </button>
+                                    <button type="button" onclick="setPicMethod('upload')" id="tab-up-btn" class="flex-1 py-1.5 rounded-lg hover:bg-white/50 text-center flex items-center justify-center gap-1.5 transition-all">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> <span id="adm-cap-up">Učitaj</span>
+                                    </button>
+                                </div>
+
+                                <!-- Camera Preview Screen -->
+                                <div id="camera-section" class="space-y-3">
+                                    <div class="w-full h-44 bg-slate-200/70 border-2 border-dashed border-slate-300 rounded-xl overflow-hidden relative flex items-center justify-center shadow-inner">
+                                        <!-- Real Time Video Preview -->
+                                        <video id="video-preview" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
+                                        <!-- Text/Instructions -->
+                                        <div id="video-placeholder" class="text-center p-4">
+                                            <i class="fa-solid fa-video text-2xl text-slate-400 mb-1"></i>
+                                            <p id="adm-cam-inst" class="text-[10px] text-slate-500 leading-tight">Uključite kameru za slikanje uživo</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" id="start-cam-btn" onclick="startCamera()" class="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer">
+                                            <i class="fa-solid fa-power-off"></i>
+                                            <span id="adm-cam-start">Start Kamera</span>
+                                        </button>
+                                        <button type="button" id="snap-cam-btn" onclick="takeSnapshot()" class="flex-1 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm opacity-50 cursor-not-allowed" disabled>
+                                            <i class="fa-solid fa-camera"></i>
+                                            <span id="adm-cam-snap">Slikaj</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- File Upload Screen -->
+                                <div id="upload-section" class="hidden space-y-3">
+                                    <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(event)" class="hidden">
+                                    <div onclick="document.getElementById('file-input').click()" class="w-full h-44 bg-slate-200/70 border-2 border-dashed border-slate-300 hover:border-pink-300 rounded-xl overflow-hidden relative flex flex-col items-center justify-center shadow-inner cursor-pointer p-4 text-center transition-all">
+                                        <i class="fa-regular fa-image text-3xl text-slate-400 mb-2"></i>
+                                        <span id="adm-up-lbl" class="text-xs font-medium text-slate-600">Kliknite za odabir slike</span>
+                                        <span class="text-[10px] text-slate-400 mt-0.5">JPEG, PNG, WEBP</span>
+                                    </div>
+                                </div>
+
+                                <!-- Captured Image Preview (Small thumb) -->
+                                <div id="captured-preview-container" class="hidden flex items-center justify-between bg-white border border-slate-200 p-2 rounded-xl">
+                                    <div class="flex items-center gap-2.5">
+                                        <img id="img-preview-thumb" src="" alt="Thumbnail" class="w-12 h-12 object-cover rounded-lg border border-slate-100">
+                                        <span id="img-preview-status" class="text-xs font-semibold text-green-600 flex items-center gap-1">
+                                            <i class="fa-solid fa-circle-check"></i> <span id="adm-img-ok">Slika spremljena</span>
+                                        </span>
+                                    </div>
+                                    <button type="button" onclick="clearPreview()" class="text-slate-400 hover:text-red-500 font-medium text-xs px-2 py-1 rounded hover:bg-slate-100 transition-all cursor-pointer">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Form Action -->
+                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-600 to-rose-500 text-white font-bold rounded-xl text-sm shadow-md hover:opacity-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span id="adm-btn-save">Spremi Proizvod</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Side: Content Tabs (Manage Products, Orders, Wishes) -->
+                <div class="lg:col-span-8 space-y-6">
+                    <!-- Navigation / Tab Select -->
+                    <div class="flex bg-slate-100 hover:bg-slate-200/60 p-1.5 rounded-2xl text-sm font-semibold text-slate-600 border border-slate-200/50 shadow-sm gap-1 select-none">
+                        <button onclick="setAdminTab('products')" id="adm-tab-prod" class="flex-1 py-2.5 rounded-xl bg-white text-slate-800 shadow-sm text-center flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-solid fa-cubes text-pink-500"></i>
+                            <span id="adm-lbl-prod">Proizvodi</span>
+                        </button>
+                        <button onclick="setAdminTab('orders')" id="adm-tab-ord" class="flex-1 py-2.5 rounded-xl hover:bg-white/50 text-center flex items-center justify-center gap-2 transition-all relative">
+                            <i class="fa-solid fa-receipt text-indigo-500"></i>
+                            <span id="adm-lbl-ord">Narudžbe</span>
+                            <span id="orders-badge" class="hidden bg-red-500 text-white text-[10px] w-5 h-5 font-bold rounded-full flex items-center justify-center absolute -top-1 right-2 border-2 border-white">0</span>
+                        </button>
+                        <button onclick="setAdminTab('wishes')" id="adm-tab-wish" class="flex-1 py-2.5 rounded-xl hover:bg-white/50 text-center flex items-center justify-center gap-2 transition-all relative">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+                            <span id="adm-lbl-wish">Želje</span>
+                            <span id="wishes-badge" class="hidden bg-amber-500 text-white text-[10px] w-5 h-5 font-bold rounded-full flex items-center justify-center absolute -top-1 right-2 border-2 border-white">0</span>
+                        </button>
+                    </div>
+
+                    <!-- 3a. ADMIN PRODUCTS VIEW -->
+                    <div id="admin-sub-products" class="admin-tab-view bg-white rounded-3xl border border-slate-100 shadow-sm p-4 sm:p-6">
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <h4 id="adm-sub-prod-title" class="text-base font-bold text-slate-800">Svi Proizvodi</h4>
+                            <span id="adm-prod-count" class="text-xs bg-slate-100 px-2.5 py-1 rounded-full text-slate-500 border border-slate-200/50">0 ukupno</span>
+                        </div>
+                        <div id="admin-products-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                            <!-- Dynamic Products List for Admin -->
+                        </div>
+                        <div id="admin-prod-empty" class="hidden text-center py-12 border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
+                            <p id="adm-prod-empty-txt" class="text-slate-500 text-sm font-medium">Nema kreiranih proizvoda.</p>
+                        </div>
+                    </div>
+
+                    <!-- 3b. ADMIN ORDERS VIEW -->
+                    <div id="admin-sub-orders" class="admin-tab-view hidden bg-white rounded-3xl border border-slate-100 shadow-sm p-4 sm:p-6">
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <h4 id="adm-sub-ord-title" class="text-base font-bold text-slate-800">Sve Narudžbe</h4>
+                            <span id="adm-ord-count" class="text-xs bg-slate-100 px-2.5 py-1 rounded-full text-slate-500 border border-slate-200/50">0 ukupno</span>
+                        </div>
+                        <div id="admin-orders-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-1">
+                            <!-- Dynamic Orders List -->
+                        </div>
+                        <div id="admin-ord-empty" class="hidden text-center py-12 border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
+                            <p id="adm-ord-empty-txt" class="text-slate-500 text-sm font-medium">Nema pristiglih narudžbi.</p>
+                        </div>
+                    </div>
+
+                    <!-- 3c. ADMIN WISHES VIEW -->
+                    <div id="admin-sub-wishes" class="admin-tab-view hidden bg-white rounded-3xl border border-slate-100 shadow-sm p-4 sm:p-6">
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <h4 id="adm-sub-wish-title" class="text-base font-bold text-slate-800">Prispjele Želje / Specijalni Zahtjevi</h4>
+                            <span id="adm-wish-count" class="text-xs bg-slate-100 px-2.5 py-1 rounded-full text-slate-500 border border-slate-200/50">0 ukupno</span>
+                        </div>
+                        <div id="admin-wishes-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-1">
+                            <!-- Dynamic Wishes List -->
+                        </div>
+                        <div id="admin-wish-empty" class="hidden text-center py-12 border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
+                            <p id="adm-wish-empty-txt" class="text-slate-500 text-sm font-medium">Nema poslatih želja.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-100 mt-auto py-6 text-center select-none">
+        <p class="text-slate-400 text-xs">
+            &copy; 2026 Sanela Studio & S-Shop. <span id="foot-rights">Sva prava pridržana.</span>
+        </p>
+    </footer>
+
+    <!-- MODAL POPUPS -->
+    <!-- Modal Backdrop -->
+    <div id="modal-backdrop" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
+        
+        <!-- 1. PRODUCT ORDER MODAL -->
+        <div id="order-modal" class="hidden bg-white max-w-md w-full rounded-3xl shadow-2xl p-6 sm:p-8 space-y-5 border border-slate-100 transform transition-all duration-300 scale-95 opacity-0">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <h3 id="modal-ord-title" class="text-xl font-bold text-slate-800">Narudžba Artikla</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl font-medium cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 p-3 rounded-2xl">
+                <img id="modal-ord-img" src="" alt="Thumbnail" class="w-14 h-14 object-cover rounded-xl border border-slate-200 shadow-sm">
+                <div>
+                    <h5 id="modal-ord-prod-name" class="font-bold text-sm text-slate-800 leading-tight">Proizvod Naziv</h5>
+                    <p id="modal-ord-prod-price" class="text-pink-600 font-bold text-xs mt-1">Cijena: 0.00 KM</p>
+                </div>
+            </div>
+
+            <form onsubmit="handleOrderSubmit(event)" class="space-y-4">
+                <input type="hidden" id="ord-product-id">
+                <div>
+                    <label id="m-lbl-name" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="ord-name">Vaše Ime i Prezime</label>
+                    <input id="ord-name" type="text" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="npr. Adnan Hadžić">
+                </div>
+                <div>
+                    <label id="m-lbl-contact" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="ord-contact">Broj Telefona / Kontakt</label>
+                    <input id="ord-contact" type="text" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="npr. 061 123 456">
+                </div>
+                <div>
+                    <label id="m-lbl-note" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="ord-note">Napomena (Opcionalno)</label>
+                    <textarea id="ord-note" rows="2" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="npr. Paket treba stići prije srijede..."></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-600 to-rose-500 text-white font-bold rounded-xl text-sm shadow-md hover:opacity-95 hover:shadow-pink-400/40 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span id="m-btn-ord">Pošalji Narudžbu</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 2. SPECIAL WISH MODAL -->
+        <div id="wish-modal" class="hidden bg-white max-w-md w-full rounded-3xl shadow-2xl p-6 sm:p-8 space-y-5 border border-slate-100 transform transition-all duration-300 scale-95 opacity-0">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-pink-500 animate-pulse"></i>
+                    <h3 id="modal-wish-title" class="text-xl font-bold text-slate-800">Pošalji Svoju Želju</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl font-medium cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <p id="modal-wish-desc" class="text-slate-500 text-xs sm:text-sm">
+                Opišite tačno šta želite da izradimo za vas. Unesite detalje o izgledu, bojama, natpisima ili idejama.
+            </p>
+
+            <form onsubmit="handleWishSubmit(event)" class="space-y-4">
+                <div>
+                    <label id="w-lbl-desc" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="wish-text">Detaljan Opis Želje</label>
+                    <textarea id="wish-text" rows="3" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="npr. Želim drveni ram sa natpisom 'Sretan Rođendan' i bojama lavande..."></textarea>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label id="w-lbl-name" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="wish-name">Ime i Prezime</label>
+                        <input id="wish-name" type="text" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="npr. Amina">
+                    </div>
+                    <div>
+                        <label id="w-lbl-contact" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1" for="wish-contact">Broj Telefona</label>
+                        <input id="wish-contact" type="text" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 bg-slate-50/40" placeholder="npr. 062 000 111">
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-600 to-rose-500 text-white font-bold rounded-xl text-sm shadow-md hover:opacity-95 hover:shadow-pink-400/40 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-wand-magic"></i>
+                        <span id="w-btn-submit">Pošalji Želju</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- NOTIFICATION SYSTEM -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2 select-none pointer-events-none"></div>
+
+    <!-- CANVAS FOR CAPTURE (Hidden) -->
+    <canvas id="hidden-canvas" class="hidden"></canvas>
+
+    <!-- SCRIPTS / JAVASCRIPT -->
+    <script>
+        // TRANSLATIONS
+        const langDict = {
+            bs: {
+                "header-sub": "Ručni rad & Unikati",
+                "nav-admin-lbl": "Admin",
+                "btn-lang-text": "EN",
+                "hero-badge": "Prekrasni Pokloni & Više",
+                "hero-title": "Unikatni detalji za vaše najdraže trenutke",
+                "hero-desc": "Pronađite predivne poklone u našoj prodavnici ili nam pošaljite vašu posebnu želju, a mi ćemo je pretvoriti u stvarnost.",
+                "hero-cta-shop": "Istražite Proizvode",
+                "hero-cta-wish": "Pošaljite Želju",
+                "section-prod-title": "Aktuelna Ponuda",
+                "section-prod-desc": "Pažljivo izrađeni predmeti dostupni za brzu narudžbu",
+                "empty-prod-txt": "Nema dostupnih proizvoda. Provjerite ponovo kasnije.",
+                "login-title": "Prijava za Admina",
+                "login-desc": "Pristupite Sanela upravljačkom panelu",
+                "login-usr-lbl": "Korisničko Ime",
+                "login-pwd-lbl": "Lozinka",
+                "login-error-txt": "Pogrešno korisničko ime ili lozinka.",
+                "login-submit-lbl": "Prijavi se",
+                "login-back-lbl": "Nazad u prodavnicu",
+                "adm-head-title": "Admin Upravljački Panel",
+                "adm-head-desc": "Dobrodošli nazad, Sanela. Upravljajte artiklima i narudžbama.",
+                "adm-btn-site": "Vidi Sajt",
+                "adm-btn-logout": "Odjavi se",
+                "adm-add-title": "Novi Proizvod",
+                "adm-add-name": "Naziv Proizvoda",
+                "adm-add-price": "Cijena (KM / €)",
+                "adm-add-status": "Status",
+                "adm-add-desc": "Opis",
+                "adm-opt-avail": "Dostupno",
+                "adm-opt-notavail": "Nije dostupno",
+                "adm-add-pic": "Fotografija Artikla",
+                "adm-cap-cam": "Kamera",
+                "adm-cap-up": "Učitaj",
+                "adm-cam-inst": "Uključite kameru za slikanje uživo",
+                "adm-cam-start": "Start Kamera",
+                "adm-cam-snap": "Slikaj",
+                "adm-up-lbl": "Kliknite za odabir slike",
+                "adm-img-ok": "Slika spremljena",
+                "adm-btn-save": "Spremi Proizvod",
+                "adm-lbl-prod": "Proizvodi",
+                "adm-lbl-ord": "Narudžbe",
+                "adm-lbl-wish": "Želje",
+                "adm-sub-prod-title": "Svi Proizvodi",
+                "adm-prod-empty-txt": "Nema kreiranih proizvoda.",
+                "adm-sub-ord-title": "Sve Narudžbe",
+                "adm-ord-empty-txt": "Nema pristiglih narudžbi.",
+                "adm-sub-wish-title": "Prispjele Želje / Specijalni Zahtjevi",
+                "adm-wish-empty-txt": "Nema poslatih želja.",
+                "foot-rights": "Sva prava pridržana.",
+                "modal-ord-title": "Narudžba Artikla",
+                "m-lbl-name": "Vaše Ime i Prezime",
+                "m-lbl-contact": "Broj Telefona / Kontakt",
+                "m-lbl-note": "Napomena (Opcionalno)",
+                "m-btn-ord": "Pošalji Narudžbu",
+                "modal-wish-title": "Pošalji Svoju Želju",
+                "modal-wish-desc": "Opišite tačno šta želite da izradimo za vas. Unesite detalje o izgledu, bojama, natpisima ili idejama.",
+                "w-lbl-desc": "Detaljan Opis Želje",
+                "w-lbl-name": "Ime i Prezime",
+                "w-lbl-contact": "Broj Telefona",
+                "w-btn-submit": "Pošalji Želju",
+                "order-lbl": "Naruči",
+                "badge-available": "Dostupno",
+                "badge-not-available": "Nije dostupno"
+            },
+            en: {
+                "header-sub": "Handmade & Unique",
+                "nav-admin-lbl": "Admin",
+                "btn-lang-text": "BS",
+                "hero-badge": "Beautiful Gifts & More",
+                "hero-title": "Unique pieces for your most beloved moments",
+                "hero-desc": "Discover beautiful items in our shop or send us your custom dream and we will craft it into reality.",
+                "hero-cta-shop": "Browse Products",
+                "hero-cta-wish": "Make a Wish",
+                "section-prod-title": "Active Offers",
+                "section-prod-desc": "Carefully handcrafted items available for immediate order",
+                "empty-prod-txt": "No products are currently available. Check back soon.",
+                "login-title": "Admin Sign In",
+                "login-desc": "Access Sanela Management Studio",
+                "login-usr-lbl": "Username",
+                "login-pwd-lbl": "Password",
+                "login-error-txt": "Incorrect username or password.",
+                "login-submit-lbl": "Sign In",
+                "login-back-lbl": "Back to Store",
+                "adm-head-title": "Admin Dashboard",
+                "adm-head-desc": "Welcome back, Sanela. Manage items and customer orders.",
+                "adm-btn-site": "Visit Site",
+                "adm-btn-logout": "Logout",
+                "adm-add-title": "New Product",
+                "adm-add-name": "Product Name",
+                "adm-add-price": "Price",
+                "adm-add-status": "Status",
+                "adm-add-desc": "Description",
+                "adm-opt-avail": "Available",
+                "adm-opt-notavail": "Not Available",
+                "adm-add-pic": "Product Photo",
+                "adm-cap-cam": "Camera",
+                "adm-cap-up": "Upload",
+                "adm-cam-inst": "Turn on camera to snap a live photo",
+                "adm-cam-start": "Start Camera",
+                "adm-cam-snap": "Snap",
+                "adm-up-lbl": "Click to select image",
+                "adm-img-ok": "Image captured",
+                "adm-btn-save": "Save Product",
+                "adm-lbl-prod": "Products",
+                "adm-lbl-ord": "Orders",
+                "adm-lbl-wish": "Wishes",
+                "adm-sub-prod-title": "All Products",
+                "adm-prod-empty-txt": "No products have been created.",
+                "adm-sub-ord-title": "All Received Orders",
+                "adm-ord-empty-txt": "No customer orders yet.",
+                "adm-sub-wish-title": "Custom Wishes / Special Requests",
+                "adm-wish-empty-txt": "No wishes have been sent.",
+                "foot-rights": "All rights reserved.",
+                "modal-ord-title": "Order Product",
+                "m-lbl-name": "Your Full Name",
+                "m-lbl-contact": "Contact Details / Phone",
+                "m-lbl-note": "Notes (Optional)",
+                "m-btn-ord": "Place Order",
+                "modal-wish-title": "Send Your Custom Wish",
+                "modal-wish-desc": "Describe what exactly you'd like us to create for you. Add colors, text, or overall vibes.",
+                "w-lbl-desc": "Detailed Description of Wish",
+                "w-lbl-name": "Your Name",
+                "w-lbl-contact": "Phone / Email",
+                "w-btn-submit": "Send Wish",
+                "order-lbl": "Order",
+                "badge-available": "Available",
+                "badge-not-available": "Not Available"
+            }
+        };
+
+        // APPLICATION STATE
+        let currentLang = 'bs';
+        let isAdminLoggedIn = false;
+        let products = [];
+        let orders = [];
+        let wishes = [];
+
+        // Camera feed state
+        let stream = null;
+        let selectedMethod = 'cam'; // 'cam' or 'upload'
+        let capturedImageDataUrl = null;
+
+        // Dummy Data for immediate rich visual display
+        const demoProducts = [
+            { id: "p1", title: "Unikatni Drveni Ram - Ljubav", price: "35 KM", description: "Ručno rađeni ram sa personalizovanim natpisom i dekoracijama od svile.", available: "dostupno", image: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=400&q=80" },
+            { id: "p2", title: "Poklon Korpa 'San'", price: "55 KM", description: "Luksuzna korpa sa mirisnim svijećama i ružama.", available: "dostupno", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=400&q=80" },
+            { id: "p3", title: "Sanela Keramička Šolja", price: "18 KM", description: "Specijalno iscrtana šolja za kafu sa zlatnim motivima.", available: "nije dostupno", image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=400&q=80" }
+        ];
+
+        // STARTUP ROUTINE
+        window.addEventListener('DOMContentLoaded', () => {
+            // Auto-detect system/browser language
+            const browserLocale = navigator.language || navigator.userLanguage;
+            if (browserLocale.startsWith('en')) {
+                currentLang = 'en';
+            } else {
+                currentLang = 'bs';
+            }
+
+            // Read LocalStorage or Fallback
+            products = JSON.parse(localStorage.getItem('sanela_products')) || demoProducts;
+            orders = JSON.parse(localStorage.getItem('sanela_orders')) || [];
+            wishes = JSON.parse(localStorage.getItem('sanela_wishes')) || [];
+
+            // Apply translations & Draw content
+            updateLangUI();
+            renderProducts();
+            renderAdminView();
+            updateStatsBadges();
+
+            // Check if admin was logged in this session
+            const adminSession = localStorage.getItem('sanela_admin_session');
+            if (adminSession === 'true') {
+                isAdminLoggedIn = true;
+                showSection('admin-panel');
+            } else {
+                showSection('public-store');
+            }
+        });
+
+        // SECTION VISIBILITY ROUTINE
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-view').forEach(s => s.classList.add('hidden'));
+            const sec = document.getElementById(sectionId);
+            if (sec) sec.classList.remove('hidden');
+
+            if (sectionId === 'admin-panel' && !isAdminLoggedIn) {
+                showSection('login-view');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // INTERNATIONALIZATION (i18n)
+        function toggleLang() {
+            currentLang = currentLang === 'bs' ? 'en' : 'bs';
+            updateLangUI();
+            renderProducts();
+            renderAdminView();
+        }
+
+        function updateLangUI() {
+            const strings = langDict[currentLang];
+            // Process basic elements mapping string id to text content
+            for (const key in strings) {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.innerHTML = strings[key];
+                }
+            }
+            // Update Lang Switcher Text
+            document.getElementById('btn-lang-text').innerText = strings['btn-lang-text'];
+
+            // Change form placeholders dynamically based on active language
+            if (currentLang === 'en') {
+                document.getElementById('username').placeholder = "e.g. sanela";
+                document.getElementById('password').placeholder = "••••••••";
+                document.getElementById('p-title').placeholder = "e.g. Custom Painted Mug";
+                document.getElementById('p-price').placeholder = "e.g. $25";
+                document.getElementById('p-desc').placeholder = "Write a short item summary here...";
+                document.getElementById('ord-name').placeholder = "e.g. Jane Doe";
+                document.getElementById('ord-contact').placeholder = "e.g. +1 555-1234";
+                document.getElementById('ord-note').placeholder = "e.g. Leave package by the door...";
+                document.getElementById('wish-text').placeholder = "Describe exactly what you want us to craft...";
+                document.getElementById('wish-name').placeholder = "e.g. Sarah";
+                document.getElementById('wish-contact').placeholder = "e.g. hello@example.com";
+            } else {
+                document.getElementById('username').placeholder = "npr. sanela";
+                document.getElementById('password').placeholder = "••••••••";
+                document.getElementById('p-title').placeholder = "npr. Unikatni Ram sa Slikom";
+                document.getElementById('p-price').placeholder = "npr. 25 KM";
+                document.getElementById('p-desc').placeholder = "Unesite kratak opis artikla...";
+                document.getElementById('ord-name').placeholder = "npr. Adnan Hadžić";
+                document.getElementById('ord-contact').placeholder = "npr. 061 123 456";
+                document.getElementById('ord-note').placeholder = "npr. Paket treba stići prije srijede...";
+                document.getElementById('wish-text').placeholder = "npr. Želim drveni ram sa natpisom 'Sretan Rođendan' i bojama lavande...";
+                document.getElementById('wish-name').placeholder = "npr. Amina";
+                document.getElementById('wish-contact').placeholder = "npr. 062 000 111";
+            }
+        }
+
+        // STORE FUNCTIONALITY - PUBLIC
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const emptyState = document.getElementById('products-empty');
+            grid.innerHTML = '';
+
+            const activeLang = langDict[currentLang];
+
+            if (products.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                products.forEach(p => {
+                    // Badge styles & translation
+                    const isAvailable = p.available === "dostupno";
+                    const badgeText = isAvailable ? activeLang["badge-available"] : activeLang["badge-not-available"];
+                    const badgeClass = isAvailable 
+                        ? "bg-emerald-100 text-emerald-800 border-emerald-200/50" 
+                        : "bg-red-50 text-red-700 border-red-100";
+
+                    // Card construction
+                    const card = document.createElement('div');
+                    card.className = "bg-white p-4 rounded-3xl border border-slate-100 hover:border-pink-200/50 hover:shadow-xl hover:shadow-slate-100 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group relative overflow-hidden select-none";
+                    card.innerHTML = `
+                        <div>
+                            <!-- Img Header -->
+                            <div class="relative w-full h-48 bg-slate-50 border border-slate-100/80 rounded-2xl overflow-hidden mb-4 shadow-sm select-none">
+                                <img src="${p.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=300'}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 select-none pointer-events-none">
+                                <span class="absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 backdrop-blur-md rounded-full shadow-sm border ${badgeClass}">
+                                    ${badgeText}
+                                </span>
+                            </div>
+                            <!-- Title & Info -->
+                            <h4 class="font-bold text-slate-800 leading-tight group-hover:text-pink-600 transition-colors text-base line-clamp-2">${p.title}</h4>
+                            <p class="text-slate-500 text-xs mt-1 leading-relaxed line-clamp-3">${p.description || '-'}</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between gap-2">
+                            <span class="text-pink-600 font-extrabold text-base tracking-tight">${p.price}</span>
+                            <button onclick="openOrderModal('${p.id}')" class="px-3.5 py-2 ${isAvailable ? 'bg-slate-900 hover:bg-pink-600 text-white' : 'bg-slate-100 text-slate-400 opacity-70 pointer-events-none'} font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <span>${activeLang["order-lbl"]}</span>
+                            </button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+            document.getElementById('items-count').innerText = products.length;
+        }
+
+        // MODALS CONTROLS
+        function openOrderModal(productId) {
+            const p = products.find(prod => prod.id === productId);
+            if (!p) return;
+
+            document.getElementById('ord-product-id').value = p.id;
+            document.getElementById('modal-ord-prod-name').innerText = p.title;
+            document.getElementById('modal-ord-prod-price').innerText = `${langDict[currentLang]["adm-add-price"]}: ${p.price}`;
+            document.getElementById('modal-ord-img').src = p.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=300';
+            
+            // clear inputs
+            document.getElementById('ord-name').value = '';
+            document.getElementById('ord-contact').value = '';
+            document.getElementById('ord-note').value = '';
+
+            const backdrop = document.getElementById('modal-backdrop');
+            const oModal = document.getElementById('order-modal');
+            const wModal = document.getElementById('wish-modal');
+
+            backdrop.classList.remove('hidden');
+            oModal.classList.remove('hidden');
+            wModal.classList.add('hidden');
+
+            setTimeout(() => {
+                oModal.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function openWishModal() {
+            // Clear inputs
+            document.getElementById('wish-text').value = '';
+            document.getElementById('wish-name').value = '';
+            document.getElementById('wish-contact').value = '';
+
+            const backdrop = document.getElementById('modal-backdrop');
+            const oModal = document.getElementById('order-modal');
+            const wModal = document.getElementById('wish-modal');
+
+            backdrop.classList.remove('hidden');
+            wModal.classList.remove('hidden');
+            oModal.classList.add('hidden');
+
+            setTimeout(() => {
+                wModal.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeModal() {
+            const backdrop = document.getElementById('modal-backdrop');
+            const oModal = document.getElementById('order-modal');
+            const wModal = document.getElementById('wish-modal');
+
+            oModal.classList.add('scale-95', 'opacity-0');
+            wModal.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                backdrop.classList.add('hidden');
+                oModal.classList.add('hidden');
+                wModal.classList.add('hidden');
+            }, 200);
+        }
+
+        // FORM SUBMISSIONS - VISITOR
+        function handleOrderSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('ord-product-id').value;
+            const p = products.find(item => item.id === id);
+            const name = document.getElementById('ord-name').value.trim();
+            const contact = document.getElementById('ord-contact').value.trim();
+            const note = document.getElementById('ord-note').value.trim();
+
+            if (!p || !name || !contact) return;
+
+            const newOrder = {
+                id: "o-" + Date.now(),
+                productId: p.id,
+                productTitle: p.title,
+                customerName: name,
+                contact: contact,
+                note: note,
+                date: new Date().toLocaleString(),
+                status: "novo"
+            };
+
+            orders.push(newOrder);
+            localStorage.setItem('sanela_orders', JSON.stringify(orders));
+
+            closeModal();
+            showToast(currentLang === 'bs' ? 'Narudžba uspješno poslata!' : 'Order submitted successfully!', 'success');
+            renderAdminView();
+            updateStatsBadges();
+        }
+
+        function handleWishSubmit(e) {
+            e.preventDefault();
+            const desc = document.getElementById('wish-text').value.trim();
+            const name = document.getElementById('wish-name').value.trim();
+            const contact = document.getElementById('wish-contact').value.trim();
+
+            if (!desc || !name || !contact) return;
+
+            const newWish = {
+                id: "w-" + Date.now(),
+                description: desc,
+                customerName: name,
+                contact: contact,
+                date: new Date().toLocaleString()
+            };
+
+            wishes.push(newWish);
+            localStorage.setItem('sanela_wishes', JSON.stringify(wishes));
+
+            closeModal();
+            showToast(currentLang === 'bs' ? 'Želja uspješno zabilježena!' : 'Wish sent successfully!', 'success');
+            renderAdminView();
+            updateStatsBadges();
+        }
+
+
+        // ADMIN FUNCTIONALITY
+        function openAdmin() {
+            if (isAdminLoggedIn) {
+                showSection('admin-panel');
+            } else {
+                showSection('login-view');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const usr = document.getElementById('username').value.trim();
+            const pwd = document.getElementById('password').value.trim();
+            const errEl = document.getElementById('login-error');
+
+            if (usr === "sanela" && pwd === "sanela") {
+                isAdminLoggedIn = true;
+                localStorage.setItem('sanela_admin_session', 'true');
+                errEl.classList.add('hidden');
+                showSection('admin-panel');
+                showToast(currentLang === 'bs' ? 'Dobrodošli, Sanela!' : 'Welcome back, Sanela!', 'success');
+            } else {
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            isAdminLoggedIn = false;
+            localStorage.removeItem('sanela_admin_session');
+            showSection('public-store');
+            showToast(currentLang === 'bs' ? 'Odjavljeni ste!' : 'Logged out successfully!', 'info');
+        }
+
+        // Subtabs routing within Admin
+        function setAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab-view').forEach(v => v.classList.add('hidden'));
+            
+            // Buttons UI reset
+            const tabBtnProd = document.getElementById('adm-tab-prod');
+            const tabBtnOrd = document.getElementById('adm-tab-ord');
+            const tabBtnWish = document.getElementById('adm-tab-wish');
+
+            [tabBtnProd, tabBtnOrd, tabBtnWish].forEach(btn => {
+                btn.classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+                btn.classList.add('hover:bg-white/50');
+            });
+
+            if (tabName === 'products') {
+                document.getElementById('admin-sub-products').classList.remove('hidden');
+                tabBtnProd.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+                tabBtnProd.classList.remove('hover:bg-white/50');
+            } else if (tabName === 'orders') {
+                document.getElementById('admin-sub-orders').classList.remove('hidden');
+                tabBtnOrd.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+                tabBtnOrd.classList.remove('hover:bg-white/50');
+            } else if (tabName === 'wishes') {
+                document.getElementById('admin-sub-wishes').classList.remove('hidden');
+                tabBtnWish.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+                tabBtnWish.classList.remove('hover:bg-white/50');
+            }
+        }
+
+        // Live Photo / File Input Tab controllers
+        function setPicMethod(method) {
+            selectedMethod = method;
+            const btnCam = document.getElementById('tab-cam-btn');
+            const btnUp = document.getElementById('tab-up-btn');
+            const camSection = document.getElementById('camera-section');
+            const upSection = document.getElementById('upload-section');
+
+            [btnCam, btnUp].forEach(btn => btn.classList.remove('bg-white', 'text-slate-800', 'shadow-sm'));
+            [btnCam, btnUp].forEach(btn => btn.classList.add('hover:bg-white/50'));
+
+            if (method === 'cam') {
+                btnCam.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+                btnCam.classList.remove('hover:bg-white/50');
+                camSection.classList.remove('hidden');
+                upSection.classList.add('hidden');
+            } else {
+                btnUp.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+                btnUp.classList.remove('hover:bg-white/50');
+                upSection.classList.remove('hidden');
+                camSection.classList.add('hidden');
+                // stop camera stream if active
+                stopCameraStream();
+            }
+        }
+
+        // Camera Feed Integration
+        function startCamera() {
+            const video = document.getElementById('video-preview');
+            const placeholder = document.getElementById('video-placeholder');
+            const snapBtn = document.getElementById('snap-cam-btn');
+
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(userStream => {
+                    stream = userStream;
+                    video.srcObject = stream;
+                    video.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    snapBtn.disabled = false;
+                    snapBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                })
+                .catch(err => {
+                    console.error("Camera access failed", err);
+                    showToast(currentLang === 'bs' ? 'Greška pri otvaranju kamere.' : 'Camera access error.', 'error');
+                });
+            } else {
+                showToast(currentLang === 'bs' ? 'Kamera nije podržana.' : 'Camera not supported.', 'error');
+            }
+        }
+
+        function takeSnapshot() {
+            if (!stream) return;
+            const video = document.getElementById('video-preview');
+            const canvas = document.getElementById('hidden-canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Fetch beautiful preview format
+            capturedImageDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+            // Stop the feed and show simple success thumbnail preview
+            stopCameraStream();
+            setCapturedPreview(capturedImageDataUrl);
+            showToast(currentLang === 'bs' ? 'Slika uspješno snimljena' : 'Picture successfully snapped', 'success');
+        }
+
+        function stopCameraStream() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            const video = document.getElementById('video-preview');
+            const placeholder = document.getElementById('video-placeholder');
+            const snapBtn = document.getElementById('snap-cam-btn');
+
+            video.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            snapBtn.disabled = true;
+            snapBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                capturedImageDataUrl = event.target.result;
+                setCapturedPreview(capturedImageDataUrl);
+                showToast(currentLang === 'bs' ? 'Slika učitana' : 'Image loaded', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setCapturedPreview(imgSrc) {
+            const container = document.getElementById('captured-preview-container');
+            const img = document.getElementById('img-preview-thumb');
+            img.src = imgSrc;
+            container.classList.remove('hidden');
+        }
+
+        function clearPreview() {
+            capturedImageDataUrl = null;
+            document.getElementById('captured-preview-container').classList.add('hidden');
+            document.getElementById('file-input').value = '';
+        }
+
+        // SAVE PRODUCT ACTION
+        function handleSaveProduct(e) {
+            e.preventDefault();
+            const title = document.getElementById('p-title').value.trim();
+            const price = document.getElementById('p-price').value.trim();
+            const status = document.getElementById('p-status').value;
+            const desc = document.getElementById('p-desc').value.trim();
+
+            if (!title || !price) return;
+
+            // Default demo image or dynamic captured/uploaded
+            let itemImage = capturedImageDataUrl || "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=300";
+
+            const newProduct = {
+                id: "p-" + Date.now(),
+                title: title,
+                price: price,
+                available: status,
+                description: desc,
+                image: itemImage
+            };
+
+            products.unshift(newProduct);
+            localStorage.setItem('sanela_products', JSON.stringify(products));
+
+            // Clean form
+            document.getElementById('p-title').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-desc').value = '';
+            clearPreview();
+
+            // Notify, draw & refresh
+            showToast(currentLang === 'bs' ? 'Proizvod uspješno dodat!' : 'Product added successfully!', 'success');
+            renderProducts();
+            renderAdminView();
+        }
+
+        // ADMIN CONTENT RENDERING
+        function renderAdminView() {
+            // Products List rendering in Admin
+            const pList = document.getElementById('admin-products-list');
+            const pEmpty = document.getElementById('admin-prod-empty');
+            pList.innerHTML = '';
+
+            if (products.length === 0) {
+                pEmpty.classList.remove('hidden');
+            } else {
+                pEmpty.classList.add('hidden');
+                products.forEach(p => {
+                    const row = document.createElement('div');
+                    row.className = "flex flex-wrap items-center justify-between bg-slate-50/70 hover:bg-slate-50 border border-slate-100 p-3 rounded-2xl gap-3 transition-all";
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <img src="${p.image}" alt="${p.title}" class="w-12 h-12 rounded-xl object-cover border border-slate-200">
+                            <div>
+                                <h5 class="font-bold text-slate-800 text-sm leading-snug">${p.title}</h5>
+                                <p class="text-xs text-slate-500">${p.price} • <span class="font-semibold text-pink-500 uppercase text-[10px]">${p.available}</span></p>
+                            </div>
+                        </div>
+                        <button onclick="deleteProduct('${p.id}')" class="p-2.5 bg-white border border-slate-200 text-slate-400 hover:text-red-600 rounded-xl hover:border-red-100 hover:bg-red-50/50 transition-all cursor-pointer">
+                            <i class="fa-solid fa-trash text-sm"></i>
+                        </button>
+                    `;
+                    pList.appendChild(row);
+                });
+            }
+            document.getElementById('adm-prod-count').innerText = `${products.length} ukupno`;
+
+            // Orders List rendering
+            const oList = document.getElementById('admin-orders-list');
+            const oEmpty = document.getElementById('admin-ord-empty');
+            oList.innerHTML = '';
+
+            if (orders.length === 0) {
+                oEmpty.classList.remove('hidden');
+            } else {
+                oEmpty.classList.add('hidden');
+                orders.forEach(ord => {
+                    const statusClass = ord.status === "novo" ? "bg-pink-100 text-pink-700 font-bold border-pink-200/50 animate-pulse" : "bg-slate-200 text-slate-600 font-medium border-slate-300";
+                    
+                    const row = document.createElement('div');
+                    row.className = "p-4 border border-slate-100 rounded-2xl bg-slate-50/60 hover:bg-slate-50 transition-all flex flex-col justify-between h-full gap-3";
+                    row.innerHTML = `
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="px-2 py-0.5 border text-[10px] rounded-full tracking-wide uppercase ${statusClass}">
+                                        ${ord.status === "novo" ? (currentLang === 'bs' ? 'Novo' : 'New') : (currentLang === 'bs' ? 'Završeno' : 'Done')}
+                                    </span>
+                                    <span class="text-slate-400 text-[10px]">${ord.date}</span>
+                                </div>
+                                <p class="font-bold text-sm text-slate-800 leading-tight">Artikal: ${ord.productTitle}</p>
+                                <p class="text-xs font-semibold text-slate-600 mt-1">Kupac: ${ord.customerName}</p>
+                                <p class="text-xs font-semibold text-pink-600 mt-0.5">Kontakt: ${ord.contact}</p>
+                                ${ord.note ? `<p class="text-xs text-slate-500 bg-white border border-slate-100 p-2 rounded-xl mt-2 select-text">${ord.note}</p>` : ''}
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end gap-2 border-t border-slate-100/50 pt-2.5">
+                            ${ord.status === "novo" ? `
+                            <button onclick="toggleOrderStatus('${ord.id}')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-check"></i>
+                                <span>Završi</span>
+                            </button>
+                            ` : ''}
+                            <button onclick="deleteOrder('${ord.id}')" class="p-2 text-slate-400 hover:text-red-500 transition-all cursor-pointer">
+                                <i class="fa-solid fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    `;
+                    oList.appendChild(row);
+                });
+            }
+            document.getElementById('adm-ord-count').innerText = `${orders.length} ukupno`;
+
+            // Wishes List rendering
+            const wList = document.getElementById('admin-wishes-list');
+            const wEmpty = document.getElementById('admin-wish-empty');
+            wList.innerHTML = '';
+
+            if (wishes.length === 0) {
+                wEmpty.classList.remove('hidden');
+            } else {
+                wEmpty.classList.add('hidden');
+                wishes.forEach(wish => {
+                    const row = document.createElement('div');
+                    row.className = "p-4 border border-slate-100 rounded-2xl bg-slate-50/60 hover:bg-slate-50 transition-all flex flex-col gap-3 justify-between";
+                    row.innerHTML = `
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="px-2.5 py-0.5 border border-amber-200 bg-amber-50 text-amber-700 text-[10px] font-bold tracking-wider uppercase rounded-full">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Želja
+                                </span>
+                                <span class="text-slate-400 text-[10px]">${wish.date}</span>
+                            </div>
+                            <p class="text-xs text-slate-700 bg-white border border-slate-100 p-3 rounded-xl mb-3 leading-relaxed font-medium select-text">
+                                "${wish.description}"
+                            </p>
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100/60 pt-2.5">
+                                <div>
+                                    <h6 class="text-xs font-bold text-slate-800">Pošiljalac: ${wish.customerName}</h6>
+                                    <p class="text-xs font-semibold text-pink-600 mt-0.5">Kontakt: ${wish.contact}</p>
+                                </div>
+                                <button onclick="deleteWish('${wish.id}')" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50/60 rounded-xl transition-all cursor-pointer">
+                                    <i class="fa-solid fa-trash text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    wList.appendChild(row);
+                });
+            }
+            document.getElementById('adm-wish-count').innerText = `${wishes.length} ukupno`;
+        }
+
+        // CRUD ACTIONS ADMIN
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('sanela_products', JSON.stringify(products));
+            renderProducts();
+            renderAdminView();
+            showToast(currentLang === 'bs' ? 'Proizvod obrisan' : 'Product deleted', 'info');
+        }
+
+        function toggleOrderStatus(id) {
+            const o = orders.find(ord => ord.id === id);
+            if (o) {
+                o.status = "završeno";
+                localStorage.setItem('sanela_orders', JSON.stringify(orders));
+                renderAdminView();
+                updateStatsBadges();
+                showToast(currentLang === 'bs' ? 'Narudžba završena' : 'Order finalized', 'success');
+            }
+        }
+
+        function deleteOrder(id) {
+            orders = orders.filter(o => o.id !== id);
+            localStorage.setItem('sanela_orders', JSON.stringify(orders));
+            renderAdminView();
+            updateStatsBadges();
+            showToast(currentLang === 'bs' ? 'Narudžba obrisana' : 'Order deleted', 'info');
+        }
+
+        function deleteWish(id) {
+            wishes = wishes.filter(w => w.id !== id);
+            localStorage.setItem('sanela_wishes', JSON.stringify(wishes));
+            renderAdminView();
+            updateStatsBadges();
+            showToast(currentLang === 'bs' ? 'Želja obrisana' : 'Wish deleted', 'info');
+        }
+
+        function updateStatsBadges() {
+            const activeOrders = orders.filter(o => o.status === "novo").length;
+            const ordBadge = document.getElementById('orders-badge');
+            if (activeOrders > 0) {
+                ordBadge.classList.remove('hidden');
+                ordBadge.innerText = activeOrders;
+            } else {
+                ordBadge.classList.add('hidden');
+            }
+
+            const wishBadge = document.getElementById('wishes-badge');
+            if (wishes.length > 0) {
+                wishBadge.classList.remove('hidden');
+                wishBadge.innerText = wishes.length;
+            } else {
+                wishBadge.classList.add('hidden');
+            }
+        }
+
+        // CUSTOM TOAST NOTIFIER
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "p-3.5 max-w-sm rounded-xl text-white text-xs font-semibold shadow-xl border flex items-center justify-between gap-3 pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300";
+            
+            if (type === 'success') {
+                toast.classList.add('bg-slate-900', 'border-slate-800');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600', 'border-red-500');
+            } else {
+                toast.classList.add('bg-indigo-600', 'border-indigo-500');
+            }
+
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid ${type === 'success' ? 'fa-circle-check text-pink-400' : 'fa-info-circle text-white'}"></i>
+                    <span>${message}</span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            `;
+
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
