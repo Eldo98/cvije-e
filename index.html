@@ -12,6 +12,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    
     <style>
         .font-dancing { font-family: 'Dancing Script', cursive; }
         .font-poppins { font-family: 'Poppins', sans-serif; }
@@ -457,6 +462,21 @@
 
     <!-- SCRIPTS / JAVASCRIPT -->
     <script>
+        // FIREBASE SETUP
+        const firebaseConfig = {
+          apiKey: "AIzaSyBOG1TyQvTqBrljvaetqAiTT2SObYqKOe4",
+          authDomain: "helloworld-d6cf3.firebaseapp.com",
+          databaseURL: "https://helloworld-d6cf3-default-rtdb.firebaseio.com",
+          projectId: "helloworld-d6cf3",
+          storageBucket: "helloworld-d6cf3.firebasestorage.app",
+          messagingSenderId: "5547576635",
+          appId: "1:5547576635:web:3ae2abd72950da9a93fb1e",
+          measurementId: "G-641E84M8B6"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         // TRANSLATIONS
         const langDict = {
             bs: {
@@ -601,11 +621,10 @@
         let selectedMethod = 'cam'; // 'cam' or 'upload'
         let capturedImageDataUrl = null;
 
-        // Dummy Data for immediate rich visual display
+        // Dummy fallback data if DB is empty
         const demoProducts = [
             { id: "p1", title: "Unikatni Drveni Ram - Ljubav", price: "35 KM", description: "Ručno rađeni ram sa personalizovanim natpisom i dekoracijama od svile.", available: "dostupno", image: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=400&q=80" },
-            { id: "p2", title: "Poklon Korpa 'San'", price: "55 KM", description: "Luksuzna korpa sa mirisnim svijećama i ružama.", available: "dostupno", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=400&q=80" },
-            { id: "p3", title: "Sanela Keramička Šolja", price: "18 KM", description: "Specijalno iscrtana šolja za kafu sa zlatnim motivima.", available: "nije dostupno", image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=400&q=80" }
+            { id: "p2", title: "Poklon Korpa 'San'", price: "55 KM", description: "Luksuzna korpa sa mirisnim svijećama i ružama.", available: "dostupno", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=400&q=80" }
         ];
 
         // STARTUP ROUTINE
@@ -618,16 +637,11 @@
                 currentLang = 'bs';
             }
 
-            // Read LocalStorage or Fallback
-            products = JSON.parse(localStorage.getItem('sanela_products')) || demoProducts;
-            orders = JSON.parse(localStorage.getItem('sanela_orders')) || [];
-            wishes = JSON.parse(localStorage.getItem('sanela_wishes')) || [];
+            // Sync with Firebase Database Realtime
+            syncWithFirebase();
 
-            // Apply translations & Draw content
+            // Apply translations & Draw initial content
             updateLangUI();
-            renderProducts();
-            renderAdminView();
-            updateStatsBadges();
 
             // Check if admin was logged in this session
             const adminSession = localStorage.getItem('sanela_admin_session');
@@ -638,6 +652,55 @@
                 showSection('public-store');
             }
         });
+
+        // Firebase Sync Engine
+        function syncWithFirebase() {
+            // Fetch Products
+            db.ref('products').on('value', snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    // Normalize into array
+                    products = Object.keys(data).map(key => ({
+                        firebaseKey: key,
+                        ...data[key]
+                    })).reverse();
+                } else {
+                    products = [...demoProducts];
+                }
+                renderProducts();
+                renderAdminView();
+            });
+
+            // Fetch Orders
+            db.ref('orders').on('value', snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    orders = Object.keys(data).map(key => ({
+                        firebaseKey: key,
+                        ...data[key]
+                    })).reverse();
+                } else {
+                    orders = [];
+                }
+                renderAdminView();
+                updateStatsBadges();
+            });
+
+            // Fetch Wishes
+            db.ref('wishes').on('value', snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    wishes = Object.keys(data).map(key => ({
+                        firebaseKey: key,
+                        ...data[key]
+                    })).reverse();
+                } else {
+                    wishes = [];
+                }
+                renderAdminView();
+                updateStatsBadges();
+            });
+        }
 
         // SECTION VISIBILITY ROUTINE
         function showSection(sectionId) {
@@ -661,17 +724,14 @@
 
         function updateLangUI() {
             const strings = langDict[currentLang];
-            // Process basic elements mapping string id to text content
             for (const key in strings) {
                 const element = document.getElementById(key);
                 if (element) {
                     element.innerHTML = strings[key];
                 }
             }
-            // Update Lang Switcher Text
             document.getElementById('btn-lang-text').innerText = strings['btn-lang-text'];
 
-            // Change form placeholders dynamically based on active language
             if (currentLang === 'en') {
                 document.getElementById('username').placeholder = "e.g. sanela";
                 document.getElementById('password').placeholder = "••••••••";
@@ -712,26 +772,22 @@
             } else {
                 emptyState.classList.add('hidden');
                 products.forEach(p => {
-                    // Badge styles & translation
                     const isAvailable = p.available === "dostupno";
                     const badgeText = isAvailable ? activeLang["badge-available"] : activeLang["badge-not-available"];
                     const badgeClass = isAvailable 
                         ? "bg-emerald-100 text-emerald-800 border-emerald-200/50" 
                         : "bg-red-50 text-red-700 border-red-100";
 
-                    // Card construction
                     const card = document.createElement('div');
                     card.className = "bg-white p-4 rounded-3xl border border-slate-100 hover:border-pink-200/50 hover:shadow-xl hover:shadow-slate-100 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group relative overflow-hidden select-none";
                     card.innerHTML = `
                         <div>
-                            <!-- Img Header -->
                             <div class="relative w-full h-48 bg-slate-50 border border-slate-100/80 rounded-2xl overflow-hidden mb-4 shadow-sm select-none">
                                 <img src="${p.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=300'}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 select-none pointer-events-none">
                                 <span class="absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 backdrop-blur-md rounded-full shadow-sm border ${badgeClass}">
                                     ${badgeText}
                                 </span>
                             </div>
-                            <!-- Title & Info -->
                             <h4 class="font-bold text-slate-800 leading-tight group-hover:text-pink-600 transition-colors text-base line-clamp-2">${p.title}</h4>
                             <p class="text-slate-500 text-xs mt-1 leading-relaxed line-clamp-3">${p.description || '-'}</p>
                         </div>
@@ -759,7 +815,6 @@
             document.getElementById('modal-ord-prod-price').innerText = `${langDict[currentLang]["adm-add-price"]}: ${p.price}`;
             document.getElementById('modal-ord-img').src = p.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=300';
             
-            // clear inputs
             document.getElementById('ord-name').value = '';
             document.getElementById('ord-contact').value = '';
             document.getElementById('ord-note').value = '';
@@ -778,7 +833,6 @@
         }
 
         function openWishModal() {
-            // Clear inputs
             document.getElementById('wish-text').value = '';
             document.getElementById('wish-name').value = '';
             document.getElementById('wish-contact').value = '';
@@ -832,13 +886,13 @@
                 status: "novo"
             };
 
-            orders.push(newOrder);
-            localStorage.setItem('sanela_orders', JSON.stringify(orders));
-
-            closeModal();
-            showToast(currentLang === 'bs' ? 'Narudžba uspješno poslata!' : 'Order submitted successfully!', 'success');
-            renderAdminView();
-            updateStatsBadges();
+            db.ref('orders').push(newOrder).then(() => {
+                closeModal();
+                showToast(currentLang === 'bs' ? 'Narudžba uspješno poslata!' : 'Order submitted successfully!', 'success');
+            }).catch(err => {
+                console.error(err);
+                showToast(currentLang === 'bs' ? 'Greška pri slanju.' : 'Submission error.', 'error');
+            });
         }
 
         function handleWishSubmit(e) {
@@ -857,13 +911,13 @@
                 date: new Date().toLocaleString()
             };
 
-            wishes.push(newWish);
-            localStorage.setItem('sanela_wishes', JSON.stringify(wishes));
-
-            closeModal();
-            showToast(currentLang === 'bs' ? 'Želja uspješno zabilježena!' : 'Wish sent successfully!', 'success');
-            renderAdminView();
-            updateStatsBadges();
+            db.ref('wishes').push(newWish).then(() => {
+                closeModal();
+                showToast(currentLang === 'bs' ? 'Želja uspješno zabilježena!' : 'Wish sent successfully!', 'success');
+            }).catch(err => {
+                console.error(err);
+                showToast(currentLang === 'bs' ? 'Greška pri slanju.' : 'Submission error.', 'error');
+            });
         }
 
 
@@ -900,11 +954,9 @@
             showToast(currentLang === 'bs' ? 'Odjavljeni ste!' : 'Logged out successfully!', 'info');
         }
 
-        // Subtabs routing within Admin
         function setAdminTab(tabName) {
             document.querySelectorAll('.admin-tab-view').forEach(v => v.classList.add('hidden'));
             
-            // Buttons UI reset
             const tabBtnProd = document.getElementById('adm-tab-prod');
             const tabBtnOrd = document.getElementById('adm-tab-ord');
             const tabBtnWish = document.getElementById('adm-tab-wish');
@@ -929,7 +981,6 @@
             }
         }
 
-        // Live Photo / File Input Tab controllers
         function setPicMethod(method) {
             selectedMethod = method;
             const btnCam = document.getElementById('tab-cam-btn');
@@ -950,12 +1001,10 @@
                 btnUp.classList.remove('hover:bg-white/50');
                 upSection.classList.remove('hidden');
                 camSection.classList.add('hidden');
-                // stop camera stream if active
                 stopCameraStream();
             }
         }
 
-        // Camera Feed Integration
         function startCamera() {
             const video = document.getElementById('video-preview');
             const placeholder = document.getElementById('video-placeholder');
@@ -990,10 +1039,8 @@
             canvas.height = video.videoHeight;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Fetch beautiful preview format
             capturedImageDataUrl = canvas.toDataURL('image/jpeg', 0.85);
 
-            // Stop the feed and show simple success thumbnail preview
             stopCameraStream();
             setCapturedPreview(capturedImageDataUrl);
             showToast(currentLang === 'bs' ? 'Slika uspješno snimljena' : 'Picture successfully snapped', 'success');
@@ -1040,7 +1087,6 @@
             document.getElementById('file-input').value = '';
         }
 
-        // SAVE PRODUCT ACTION
         function handleSaveProduct(e) {
             e.preventDefault();
             const title = document.getElementById('p-title').value.trim();
@@ -1050,7 +1096,6 @@
 
             if (!title || !price) return;
 
-            // Default demo image or dynamic captured/uploaded
             let itemImage = capturedImageDataUrl || "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=300";
 
             const newProduct = {
@@ -1062,24 +1107,21 @@
                 image: itemImage
             };
 
-            products.unshift(newProduct);
-            localStorage.setItem('sanela_products', JSON.stringify(products));
-
-            // Clean form
-            document.getElementById('p-title').value = '';
-            document.getElementById('p-price').value = '';
-            document.getElementById('p-desc').value = '';
-            clearPreview();
-
-            // Notify, draw & refresh
-            showToast(currentLang === 'bs' ? 'Proizvod uspješno dodat!' : 'Product added successfully!', 'success');
-            renderProducts();
-            renderAdminView();
+            db.ref('products').push(newProduct).then(() => {
+                document.getElementById('p-title').value = '';
+                document.getElementById('p-price').value = '';
+                document.getElementById('p-desc').value = '';
+                clearPreview();
+                showToast(currentLang === 'bs' ? 'Proizvod uspješno dodat!' : 'Product added successfully!', 'success');
+            }).catch(err => {
+                console.error(err);
+                showToast(currentLang === 'bs' ? 'Greška pri spremanju.' : 'Error saving product.', 'error');
+            });
         }
 
         // ADMIN CONTENT RENDERING
         function renderAdminView() {
-            // Products List rendering in Admin
+            // Products
             const pList = document.getElementById('admin-products-list');
             const pEmpty = document.getElementById('admin-prod-empty');
             pList.innerHTML = '';
@@ -1099,7 +1141,7 @@
                                 <p class="text-xs text-slate-500">${p.price} • <span class="font-semibold text-pink-500 uppercase text-[10px]">${p.available}</span></p>
                             </div>
                         </div>
-                        <button onclick="deleteProduct('${p.id}')" class="p-2.5 bg-white border border-slate-200 text-slate-400 hover:text-red-600 rounded-xl hover:border-red-100 hover:bg-red-50/50 transition-all cursor-pointer">
+                        <button onclick="deleteProduct('${p.firebaseKey}')" class="p-2.5 bg-white border border-slate-200 text-slate-400 hover:text-red-600 rounded-xl hover:border-red-100 hover:bg-red-50/50 transition-all cursor-pointer">
                             <i class="fa-solid fa-trash text-sm"></i>
                         </button>
                     `;
@@ -1108,7 +1150,7 @@
             }
             document.getElementById('adm-prod-count').innerText = `${products.length} ukupno`;
 
-            // Orders List rendering
+            // Orders
             const oList = document.getElementById('admin-orders-list');
             const oEmpty = document.getElementById('admin-ord-empty');
             oList.innerHTML = '';
@@ -1139,12 +1181,12 @@
                         </div>
                         <div class="flex items-center justify-end gap-2 border-t border-slate-100/50 pt-2.5">
                             ${ord.status === "novo" ? `
-                            <button onclick="toggleOrderStatus('${ord.id}')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer">
+                            <button onclick="toggleOrderStatus('${ord.firebaseKey}')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer">
                                 <i class="fa-solid fa-check"></i>
                                 <span>Završi</span>
                             </button>
                             ` : ''}
-                            <button onclick="deleteOrder('${ord.id}')" class="p-2 text-slate-400 hover:text-red-500 transition-all cursor-pointer">
+                            <button onclick="deleteOrder('${ord.firebaseKey}')" class="p-2 text-slate-400 hover:text-red-500 transition-all cursor-pointer">
                                 <i class="fa-solid fa-trash text-sm"></i>
                             </button>
                         </div>
@@ -1154,7 +1196,7 @@
             }
             document.getElementById('adm-ord-count').innerText = `${orders.length} ukupno`;
 
-            // Wishes List rendering
+            // Wishes
             const wList = document.getElementById('admin-wishes-list');
             const wEmpty = document.getElementById('admin-wish-empty');
             wList.innerHTML = '';
@@ -1182,7 +1224,7 @@
                                     <h6 class="text-xs font-bold text-slate-800">Pošiljalac: ${wish.customerName}</h6>
                                     <p class="text-xs font-semibold text-pink-600 mt-0.5">Kontakt: ${wish.contact}</p>
                                 </div>
-                                <button onclick="deleteWish('${wish.id}')" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50/60 rounded-xl transition-all cursor-pointer">
+                                <button onclick="deleteWish('${wish.firebaseKey}')" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50/60 rounded-xl transition-all cursor-pointer">
                                     <i class="fa-solid fa-trash text-sm"></i>
                                 </button>
                             </div>
@@ -1195,39 +1237,32 @@
         }
 
         // CRUD ACTIONS ADMIN
-        function deleteProduct(id) {
-            products = products.filter(p => p.id !== id);
-            localStorage.setItem('sanela_products', JSON.stringify(products));
-            renderProducts();
-            renderAdminView();
-            showToast(currentLang === 'bs' ? 'Proizvod obrisan' : 'Product deleted', 'info');
+        function deleteProduct(key) {
+            if (!key) return;
+            db.ref('products/' + key).remove().then(() => {
+                showToast(currentLang === 'bs' ? 'Proizvod obrisan' : 'Product deleted', 'info');
+            });
         }
 
-        function toggleOrderStatus(id) {
-            const o = orders.find(ord => ord.id === id);
-            if (o) {
-                o.status = "završeno";
-                localStorage.setItem('sanela_orders', JSON.stringify(orders));
-                renderAdminView();
-                updateStatsBadges();
+        function toggleOrderStatus(key) {
+            if (!key) return;
+            db.ref('orders/' + key).update({ status: 'završeno' }).then(() => {
                 showToast(currentLang === 'bs' ? 'Narudžba završena' : 'Order finalized', 'success');
-            }
+            });
         }
 
-        function deleteOrder(id) {
-            orders = orders.filter(o => o.id !== id);
-            localStorage.setItem('sanela_orders', JSON.stringify(orders));
-            renderAdminView();
-            updateStatsBadges();
-            showToast(currentLang === 'bs' ? 'Narudžba obrisana' : 'Order deleted', 'info');
+        function deleteOrder(key) {
+            if (!key) return;
+            db.ref('orders/' + key).remove().then(() => {
+                showToast(currentLang === 'bs' ? 'Narudžba obrisana' : 'Order deleted', 'info');
+            });
         }
 
-        function deleteWish(id) {
-            wishes = wishes.filter(w => w.id !== id);
-            localStorage.setItem('sanela_wishes', JSON.stringify(wishes));
-            renderAdminView();
-            updateStatsBadges();
-            showToast(currentLang === 'bs' ? 'Želja obrisana' : 'Wish deleted', 'info');
+        function deleteWish(key) {
+            if (!key) return;
+            db.ref('wishes/' + key).remove().then(() => {
+                showToast(currentLang === 'bs' ? 'Želja obrisana' : 'Wish deleted', 'info');
+            });
         }
 
         function updateStatsBadges() {
