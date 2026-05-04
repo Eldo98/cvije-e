@@ -654,6 +654,7 @@
         });
 
         // Firebase Sync Engine
+        let hasSeeded = false;
         function syncWithFirebase() {
             // Fetch Products
             db.ref('products').on('value', snapshot => {
@@ -664,8 +665,15 @@
                         firebaseKey: key,
                         ...data[key]
                     })).reverse();
+                } else if (!hasSeeded) {
+                    hasSeeded = true;
+                    // Seed initial data directly to Firebase so it always has firebaseKeys
+                    demoProducts.forEach(item => {
+                        db.ref('products').push(item);
+                    });
+                    return;
                 } else {
-                    products = [...demoProducts];
+                    products = [];
                 }
                 renderProducts();
                 renderAdminView();
@@ -1238,30 +1246,41 @@
 
         // CRUD ACTIONS ADMIN
         function deleteProduct(key) {
-            if (!key) return;
+            if (!key || key === 'undefined') return;
             db.ref('products/' + key).remove().then(() => {
                 showToast(currentLang === 'bs' ? 'Proizvod obrisan' : 'Product deleted', 'info');
+            }).catch(err => {
+                console.error(err);
+                showToast(currentLang === 'bs' ? 'Greška pri brisanju' : 'Error deleting', 'error');
             });
         }
 
         function toggleOrderStatus(key) {
-            if (!key) return;
+            if (!key || key === 'undefined') return;
             db.ref('orders/' + key).update({ status: 'završeno' }).then(() => {
                 showToast(currentLang === 'bs' ? 'Narudžba završena' : 'Order finalized', 'success');
+            }).catch(err => {
+                console.error(err);
             });
         }
 
         function deleteOrder(key) {
-            if (!key) return;
+            if (!key || key === 'undefined') return;
             db.ref('orders/' + key).remove().then(() => {
                 showToast(currentLang === 'bs' ? 'Narudžba obrisana' : 'Order deleted', 'info');
+            }).catch(err => {
+                console.error(err);
+                showToast(currentLang === 'bs' ? 'Greška pri brisanju' : 'Error deleting', 'error');
             });
         }
 
         function deleteWish(key) {
-            if (!key) return;
+            if (!key || key === 'undefined') return;
             db.ref('wishes/' + key).remove().then(() => {
                 showToast(currentLang === 'bs' ? 'Želja obrisana' : 'Wish deleted', 'info');
+            }).catch(err => {
+                console.error(err);
+                showToast(currentLang === 'bs' ? 'Greška pri brisanju' : 'Error deleting', 'error');
             });
         }
 
