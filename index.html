@@ -643,18 +643,11 @@
             // Apply translations & Draw initial content
             updateLangUI();
 
-            // Check if admin was logged in this session
-            const adminSession = localStorage.getItem('sanela_admin_session');
-            if (adminSession === 'true') {
-                isAdminLoggedIn = true;
-                showSection('admin-panel');
-            } else {
-                showSection('public-store');
-            }
+            // Default to public store upon visiting
+            showSection('public-store');
         });
 
         // Firebase Sync Engine
-        let hasSeeded = false;
         function syncWithFirebase() {
             // Fetch Products
             db.ref('products').on('value', snapshot => {
@@ -665,13 +658,6 @@
                         firebaseKey: key,
                         ...data[key]
                     })).reverse();
-                } else if (!hasSeeded) {
-                    hasSeeded = true;
-                    // Seed initial data directly to Firebase so it always has firebaseKeys
-                    demoProducts.forEach(item => {
-                        db.ref('products').push(item);
-                    });
-                    return;
                 } else {
                     products = [];
                 }
@@ -799,9 +785,9 @@
                             <h4 class="font-bold text-slate-800 leading-tight group-hover:text-pink-600 transition-colors text-base line-clamp-2">${p.title}</h4>
                             <p class="text-slate-500 text-xs mt-1 leading-relaxed line-clamp-3">${p.description || '-'}</p>
                         </div>
-                        <div class="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between gap-2">
+                            <div class="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between gap-2">
                             <span class="text-pink-600 font-extrabold text-base tracking-tight">${p.price}</span>
-                            <button onclick="openOrderModal('${p.id}')" class="px-3.5 py-2 ${isAvailable ? 'bg-slate-900 hover:bg-pink-600 text-white' : 'bg-slate-100 text-slate-400 opacity-70 pointer-events-none'} font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
+                            <button onclick="openOrderModal('${p.firebaseKey}')" class="px-3.5 py-2 ${isAvailable ? 'bg-slate-900 hover:bg-pink-600 text-white' : 'bg-slate-100 text-slate-400 opacity-70 pointer-events-none'} font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
                                 <i class="fa-solid fa-cart-shopping"></i>
                                 <span>${activeLang["order-lbl"]}</span>
                             </button>
@@ -815,10 +801,10 @@
 
         // MODALS CONTROLS
         function openOrderModal(productId) {
-            const p = products.find(prod => prod.id === productId);
+            const p = products.find(prod => (prod.firebaseKey === productId || prod.id === productId));
             if (!p) return;
 
-            document.getElementById('ord-product-id').value = p.id;
+            document.getElementById('ord-product-id').value = p.firebaseKey || p.id;
             document.getElementById('modal-ord-prod-name').innerText = p.title;
             document.getElementById('modal-ord-prod-price').innerText = `${langDict[currentLang]["adm-add-price"]}: ${p.price}`;
             document.getElementById('modal-ord-img').src = p.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=300';
@@ -876,7 +862,7 @@
         function handleOrderSubmit(e) {
             e.preventDefault();
             const id = document.getElementById('ord-product-id').value;
-            const p = products.find(item => item.id === id);
+            const p = products.find(item => (item.firebaseKey === id || item.id === id));
             const name = document.getElementById('ord-name').value.trim();
             const contact = document.getElementById('ord-contact').value.trim();
             const note = document.getElementById('ord-note').value.trim();
@@ -885,7 +871,7 @@
 
             const newOrder = {
                 id: "o-" + Date.now(),
-                productId: p.id,
+                productId: p.firebaseKey || p.id,
                 productTitle: p.title,
                 customerName: name,
                 contact: contact,
